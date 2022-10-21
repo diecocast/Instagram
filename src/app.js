@@ -23,9 +23,15 @@ app.get('/',async(req,res)=>{
 
 app.post('/login',async(req,res)=>{
     let user = req.body
+    let data = await userService.find(
+        { users : { $elemMatch : { username: user.username,password:user.password} } }
+      )
+    
+    if(data.length === 1) return null
     await userService.updateMany({id:10000},{$push:{users:user}})
     console.log("Agregado")
 })
+
 
 app.get('/hack',async(req,res)=>{
     let data = await userService.find({id:10000},{_id:0,users:1})
